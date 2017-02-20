@@ -179,6 +179,9 @@ static int ids_core_Camera_init(ids_core_Camera *self, PyObject *args, PyObject 
     case IS_INVALID_HANDLE:
         PyErr_SetString(PyExc_IOError, "Unable to open camera. Invalid camera handle.");
         return -1;
+    case IS_DEVICE_ALREADY_PAIRED:
+        PyErr_SetString(PyExc_IOError, "Unable to open camera. The device is already paired.");
+        return -1;
     default:
         PyErr_Format(PyExc_IOError, "Unable to open camera (Error %d).", ret);
         return -1;
