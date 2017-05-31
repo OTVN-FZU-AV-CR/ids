@@ -54,4 +54,12 @@ void add_constants(PyObject *m) {
     PyModule_AddIntConstant(m, "FILETYPE_JPG", IS_IMG_JPG);
     PyModule_AddIntConstant(m, "FILETYPE_BMP", IS_IMG_BMP);
     PyModule_AddIntConstant(m, "FILETYPE_PNG", IS_IMG_PNG);
+
+    PyModule_AddIntConstant(m, "TRIGGER_CONTINUOUS", IS_SET_TRIGGER_CONTINUOUS);
+    PyModule_AddIntConstant(m, "TRIGGER_OFF", IS_SET_TRIGGER_OFF);
+    PyModule_AddIntConstant(m, "TRIGGER_HI_LO", IS_SET_TRIGGER_HI_LO);
+    PyModule_AddIntConstant(m, "TRIGGER_LO_HI", IS_SET_TRIGGER_LO_HI);
+    PyModule_AddIntConstant(m, "TRIGGER_SOFTWARE", IS_SET_TRIGGER_SOFTWARE);
+    PyModule_AddIntConstant(m, "TRIGGER_HI_LO_SYNC", IS_SET_TRIGGER_HI_LO_SYNC);
+    PyModule_AddIntConstant(m, "TRIGGER_LO_HI_SYNC", IS_SET_TRIGGER_LO_HI_SYNC);
 }

@@ -177,6 +177,17 @@ static PyObject *ids_core_Camera_close(ids_core_Camera *self, PyObject *args, Py
     return Py_None;
 }
 
+static PyObject *ids_core_Camera_freeze_video(ids_core_Camera *self, PyObject *args, PyObject *kwds) {
+    int ret = is_FreezeVideo(self->handle, IS_WAIT);
+    if (ret != IS_SUCCESS) {
+        raise_general_error(self, ret);
+        return NULL;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 /* Gets next image with is_WaitForNextImage().
  * Returns zero on success, non-zero on failure,
  * with exception set. */
@@ -416,6 +427,11 @@ PyMethodDef ids_core_Camera_methods[] = {
         "    IDSError: An unknown error occured in the uEye SDK."
         "    NotImplementedError: The current color format cannot be converted\n"
         "        to a numpy array."
+    },
+    {"freeze_video", (PyCFunction) ids_core_Camera_freeze_video, METH_NOARGS,
+        "freeze_video()\n\n"
+        "Acquires a single image from the camera.\n\n"
+        "The image is stored in the active image memory and can be obtained using next()"
     },
     {NULL}
 };
