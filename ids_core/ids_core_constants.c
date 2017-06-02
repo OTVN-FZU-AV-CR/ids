@@ -62,4 +62,7 @@ void add_constants(PyObject *m) {
     PyModule_AddIntConstant(m, "TRIGGER_SOFTWARE", IS_SET_TRIGGER_SOFTWARE);
     PyModule_AddIntConstant(m, "TRIGGER_HI_LO_SYNC", IS_SET_TRIGGER_HI_LO_SYNC);
     PyModule_AddIntConstant(m, "TRIGGER_LO_HI_SYNC", IS_SET_TRIGGER_LO_HI_SYNC);
+	
+	PyModule_AddIntConstant(m, "VIDEO_DONT_WAIT", IS_DONT_WAIT);
+    PyModule_AddIntConstant(m, "VIDEO_WAIT", IS_WAIT);
 }

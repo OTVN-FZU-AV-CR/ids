@@ -178,7 +178,24 @@ static PyObject *ids_core_Camera_close(ids_core_Camera *self, PyObject *args, Py
 }
 
 static PyObject *ids_core_Camera_freeze_video(ids_core_Camera *self, PyObject *args, PyObject *kwds) {
-    int ret = is_FreezeVideo(self->handle, IS_WAIT);
+    long wait = IS_WAIT;
+	
+	if (!PyArg_ParseTuple(args, "|l:freeze_video", &wait)) {
+		return NULL;
+	}
+	
+	int ret = is_FreezeVideo(self->handle, wait);
+    if (ret != IS_SUCCESS) {
+        raise_general_error(self, ret);
+        return NULL;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *ids_core_Camera_force_trigger(ids_core_Camera *self, PyObject *args, PyObject *kwds) {
+    int ret = is_ForceTrigger(self->handle);
     if (ret != IS_SUCCESS) {
         raise_general_error(self, ret);
         return NULL;
@@ -428,10 +445,15 @@ PyMethodDef ids_core_Camera_methods[] = {
         "    NotImplementedError: The current color format cannot be converted\n"
         "        to a numpy array."
     },
-    {"freeze_video", (PyCFunction) ids_core_Camera_freeze_video, METH_NOARGS,
-        "freeze_video()\n\n"
+    {"freeze_video", (PyCFunction) ids_core_Camera_freeze_video, METH_VARARGS,
+        "freeze_video(wait=VIDEO_WAIT)\n\n"
         "Acquires a single image from the camera.\n\n"
         "The image is stored in the active image memory and can be obtained using next()"
+    },
+	{"force_trigger", (PyCFunction) ids_core_Camera_force_trigger, METH_NOARGS,
+        "force_trigger()\n\n"
+        "Enables to force a trigger during a hardware trigger recording to take up a picture independently of a real trigger signal.\n\n"
+        "This function can only be used, if the trigger recording was started with the parameter IS_DONT_WAIT"
     },
     {NULL}
 };
