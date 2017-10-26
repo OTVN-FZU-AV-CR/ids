@@ -1,6 +1,12 @@
 IDS Python Module
 ==================
 
+**_Important:_
+There is now an _offical python interface_ directly from IDS:
+https://pypi.org/project/pyueye**
+
+
+
 A module for interfacing with IDS Imaging machine vision cameras.
 This module wraps the IDS uEye SDK, providing a convient Python interface
 to much of the SDK.  The ids.Camera object provides attributes for easily
