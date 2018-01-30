@@ -33,25 +33,17 @@ __status__ = "Development"
 # from PyQt5 import QtGui
 from PyQt4 import QtCore
 from PyQt4 import QtGui
-from pyueye import ueye
+import cv2
+import numpy as np
 
 
-def get_qt_format(ueye_color_format):
-    color_formats = {ueye.IS_CM_SENSOR_RAW8: QtGui.QImage.Format_Mono,
-                     ueye.IS_CM_MONO8: QtGui.QImage.Format_Mono,
-                     ueye.IS_CM_RGB8_PACKED: QtGui.QImage.Format_RGB888,
-                     ueye.IS_CM_BGR8_PACKED: QtGui.QImage.Format_RGB888,
-                     ueye.IS_CM_RGBA8_PACKED: QtGui.QImage.Format_RGB32,
-                     ueye.IS_CM_BGRA8_PACKED: QtGui.QImage.Format_RGB32}
-    return color_formats[ueye_color_format]
-
-
-class PyuEyeQtView(QtGui.QWidget):
+class IdsQtView(QtGui.QWidget):
 
     update_signal = QtCore.pyqtSignal(QtGui.QImage, name="update_signal")
 
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
+        self.__image = None
         self.image = None
         self.graphics_view = QtGui.QGraphicsView(self)
         self.v_layout = QtGui.QVBoxLayout(self)
@@ -74,7 +66,7 @@ class PyuEyeQtView(QtGui.QWidget):
     #     pass  # print(value)
 
     def draw_background(self, painter, rect):
-        if self.image:
+        if self.image is not None:
             image = self.image.scaled(rect.width(), rect.height(),
                                       QtCore.Qt.KeepAspectRatio)
             painter.drawImage(rect.x(), rect.y(), image)
@@ -83,11 +75,32 @@ class PyuEyeQtView(QtGui.QWidget):
         self.scene.update()
 
     def user_callback(self, image_data):
-        return image_data.as_cv_image()
+        return image_data
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, image):
+        if isinstance(image, np.ndarray):
+            self.__image = self._np2qtimage(image)
+        else:
+            self.__image = image
 
     def handle(self, image_data):
         self.image = self.user_callback(image_data)
         self.update_signal.emit(self.image)
+
+    def _np2qtimage(self, image):
+        # print("")
+        # print(image.shape)
+        # print(image)
+        image = cv2.cvtColor(image, cv2.COLOR_BAYER_GR2BGR)
+        return QtGui.QImage(image,
+                            image.shape[1],
+                            image.shape[0],
+                            QtGui.QImage.Format_RGB888)
 
     def shutdown(self):
         self.close()
@@ -96,7 +109,7 @@ class PyuEyeQtView(QtGui.QWidget):
         self.processors.append(callback)
 
 
-class PyuEyeQtApp:
+class IdsQtApp:
     def __init__(self, args=[]):
         self.qt_app = QtGui.QApplication(args)
 
