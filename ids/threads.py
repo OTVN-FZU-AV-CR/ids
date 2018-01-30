@@ -68,3 +68,65 @@ class LiveThread(GatherThread):
                 self.views = [self.views]
             for view in self.views:
                 view.handle(image_data)
+
+
+class UselessThread(GatherThread):
+    def __init__(self, cam, views=None, copy=True):
+        """
+        Thread used for debugging only.
+        """
+        super().__init__(cam=cam, copy=copy)
+        self.views = views
+
+    def process(self, image_data):
+        print(self.cam.get_exposure())
+        import numpy as np
+        new_exp = np.random.rand()*20
+        self.cam.set_exposure(new_exp)
+        print(f"nex exposure {new_exp}")
+        print(self.cam.get_exposure())
+
+
+class SaveThread(GatherThread):
+    def __init__(self, cam, path, copy=True):
+        """
+        Thread used for saving images.
+        """
+        super().__init__(cam=cam, copy=copy)
+        self.path = path
+
+    def process(self, image_data):
+        cv2.imwrite(self.path, image_data.as_1d_image())
+        self.stop()
+
+
+class RecordThread(GatherThread):
+    def __init__(self, cam, path, nmb_frame=10, copy=True):
+        """
+        Thread used to record videos.
+        """
+        super().__init__(cam=cam, copy=copy)
+        self.nmb_frame = nmb_frame
+        self.ind_frame = 0
+        self.path = path
+        aoi = self.cam.get_aoi()
+        # TODO: add real fps
+        # Create videowriter instance
+        fourcc = cv2.VideoWriter_fourcc("M", "J", "P", "G")
+        self.vw = cv2.VideoWriter(self.path,
+                                  # cv2.CAP_FFMPEG,
+                                  fourcc=fourcc,
+                                  fps=10,
+                                  frameSize=(aoi.width, aoi.height),
+                                  isColor=0)
+
+    def process(self, imdata):
+        self.vw.write(imdata)
+        self.ind_frame += 1
+        # stop
+        if self.ind_frame >= self.nmb_frame:
+            self.stop()
+
+    def stop(self):
+        self.vw.release()
+        super().stop()
