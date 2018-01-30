@@ -59,7 +59,10 @@ class Camera(ids_core.Camera):
         return self
 
     def __exit__(self, _type, value, traceback):
-        self.close()
+        try:
+            self.close()
+        except ids_core.IDSError:
+            pass
 
     def _allocate_memory(self):
         for i in range(self.nummem):

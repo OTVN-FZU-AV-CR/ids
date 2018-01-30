@@ -1,12 +1,12 @@
 import ids
-from pypyueye import PyuEyeQtApp, PyuEyeQtView
 from PyQt4 import QtGui
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import ids
+from ids.gui import IdsQtApp, IdsQtView
 
-with ids.Camera(nummem=100, color=ids.COLOR_MONO_8) as cam:
+with ids.Camera(nummem=2, color=ids.COLOR_MONO_8) as cam:
     #==========================================================================
     # Settings
     #==========================================================================
@@ -18,6 +18,8 @@ with ids.Camera(nummem=100, color=ids.COLOR_MONO_8) as cam:
     # cam.auto_white_balance = False
     # cam.continuous_capture = True               # Start image capture
     cam.gain = 0
+    # cam.height = 600
+    # cam.width = 800
     cam.pixelclock = 10
 
     # #==============================================================================
@@ -29,15 +31,12 @@ with ids.Camera(nummem=100, color=ids.COLOR_MONO_8) as cam:
     # cd.process(img)
 
     #======================================================================
-    # Live video with circle detection
+    # Live video
     #======================================================================
     # we need a QApplication, that runs our QT Gui Framework
-    app = PyuEyeQtApp()
+    app = IdsQtApp()
     # a basic qt window
-    view = PyuEyeQtView()
-    # Create a circle detector and associate it to the view
-    cd = ids.CircleDetector(nmb_circ=1)
-    view.user_callback = cd.process
+    view = IdsQtView()
     # Show the view
     view.show()
     # a thread that waits for new images and processes all connected views
@@ -47,3 +46,23 @@ with ids.Camera(nummem=100, color=ids.COLOR_MONO_8) as cam:
     # Run and wait for the app to quit
     app.exec_()
     cam.close()
+
+    # #======================================================================
+    # # Live video with circle detection
+    # #======================================================================
+    # # we need a QApplication, that runs our QT Gui Framework
+    # app = IdsQtApp()
+    # # a basic qt window
+    # view = IdsQtView()
+    # # Create a circle detector and associate it to the view
+    # cd = ids.CircleDetector(nmb_circ=1)
+    # view.user_callback = cd.process
+    # # Show the view
+    # view.show()
+    # # a thread that waits for new images and processes all connected views
+    # thread = ids.LiveThread(cam, view)
+    # thread.start()
+    # app.exit_connect(thread.stop)
+    # # Run and wait for the app to quit
+    # app.exec_()
+    # cam.close()
