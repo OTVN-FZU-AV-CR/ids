@@ -51,13 +51,13 @@ else:
   }
 # Platform-independent args.
 args['sources'] = [
-  'ids_core/ids_core.c',
-  'ids_core/ids_core_methods.c',
-  'ids_core/ids_core_constants.c',
-  'ids_core/ids_core_Camera.c',
-  'ids_core/ids_core_Camera_methods.c',
-  'ids_core/ids_core_Camera_attributes.c',
-  'ids_core/ids_core_color.c',
+  'ids/ids_core/ids_core.c',
+  'ids/ids_core/ids_core_methods.c',
+  'ids/ids_core/ids_core_constants.c',
+  'ids/ids_core/ids_core_Camera.c',
+  'ids/ids_core/ids_core_Camera_methods.c',
+  'ids/ids_core/ids_core_Camera_attributes.c',
+  'ids/ids_core/ids_core_color.c',
 ]
 ids_core = Extension("ids_core", **args)
 
